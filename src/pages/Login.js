@@ -1,18 +1,16 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
 import axios from "../api/axios";
-import MainMenu from "./MainMenu";
 import { Button, Alert, Card, Form, Container } from "react-bootstrap";
-import { NavLink, Link, useNavigate } from "react-router-dom";
+import {useNavigate } from "react-router-dom";
 import { FiAlertCircle } from "react-icons/fi";
 import AuthContext from "../context/AuthProvider";
-import MyNavbar from "../components/MyNavbar";
 import { FileEarmarkRuledFill } from "react-bootstrap-icons";
 
 const Login = () => {
   const LOGIN_URL = "/users/login";
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [alert, setAlert] = useState(true);
+  const [alert, setAlert] = useState(false);
   const [validated, setValidated] = useState(false);
 
   let navigate = useNavigate();
@@ -20,9 +18,9 @@ const Login = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setAlert(false);
-    }, 3000);
+    }, 5000);
     return () => clearTimeout(timer);
-  }, []);
+  }, [username]);
 
   const onChangeUsername = (e) => {
     setUsername(e.target.value);
@@ -38,7 +36,7 @@ const Login = () => {
       event.stopPropagation();
     }
     setValidated(true);
-    
+
     try {
       const data = { username: username, password: password };
       const response = await axios.post(LOGIN_URL, data);

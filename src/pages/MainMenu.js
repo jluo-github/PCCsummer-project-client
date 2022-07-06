@@ -77,17 +77,17 @@ const MainMenu = () => {
           <Row className="mt-5 mb-5 text-center">
             <h3>Main Menu</h3>
 
-            <Link className="navLink" to="/resource">
+            <Link className="navLink" to="resources">
               Add Available Resource!
             </Link>
-            <Link className="navLink" to="/incident">
+            <Link className="navLink" to="incidents">
               {" "}
               Add Emergency Incident
             </Link>
-            <Link className="navLink" to="/search-resources">
+            <Link className="navLink" to="search-resources">
               Search Resources
             </Link>
-            <Link className="navLink" to="/resource-report">
+            <Link className="navLink" to="resource-report">
               Generate Resource Report
             </Link>
           </Row>

@@ -116,6 +116,7 @@ const SearchResourcesForm = () => {
               </Col>
               <Col>
                 <Form.Select type="select">
+                  <option> </option>
                   {items.map((item) => {
                     return <option value={item.id}>{item.description}</option>;
                   })}
@@ -133,9 +134,7 @@ const SearchResourcesForm = () => {
               <Col>
                 <Form.Select type="select">
                   <option value="">Please Select Incident</option>
-                  {items.map((item) => {
-                    return <option value={item.id}>{item.email}</option>;
-                  })}
+                  {/* <option> </option> */}
                 </Form.Select>
               </Col>{" "}
             </Row>

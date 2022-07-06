@@ -14,14 +14,12 @@ import {
 } from "react-bootstrap";
 
 const Resource = () => {
-  const RESOURCES_URL = "/resources";
-  const FUNCTIONS_URL = "/functions";
-  const UNITS_URL = "/units";
-
   const [functions, setFunctions] = useState([]);
   const [units, setUnits] = useState([]);
   const [resourceId, setResourceId] = useState("");
   const [selected, setSelected] = useState({ id: 1 });
+  const [reload, setReload] = useState(null);
+  const [sF, setSF] = useState("");
 
   const refName = useRef(null);
   const refPf = useRef(null);
@@ -34,7 +32,7 @@ const Resource = () => {
 
   const fitchFunctions = async () => {
     try {
-      const response = await axios.get(FUNCTIONS_URL);
+      const response = await axios.get("/functions");
       setFunctions(response.data);
     } catch (error) {
       console.log(error);
@@ -43,7 +41,7 @@ const Resource = () => {
 
   const fitchUnits = async () => {
     try {
-      const response = await axios.get(UNITS_URL);
+      const response = await axios.get("/units");
       setUnits(response.data);
     } catch (error) {
       console.log(error);
@@ -53,11 +51,15 @@ const Resource = () => {
   useEffect(() => {
     fitchFunctions();
     fitchUnits();
-  }, []);
+    console.log(reload);
+  }, [reload]);
 
   const onClick = () => {
-    fitchFunctions();
-    fitchUnits();
+    // window.location.reload(false);
+    setReload((prev) => prev + 1);
+    setResourceId("");
+    // fitchFunctions();
+    // fitchUnits();
   };
 
   const displayName = localStorage.getItem("displayName");
@@ -89,7 +91,7 @@ const Resource = () => {
       unit: refUnit.current.value,
     };
     axios
-      .post(RESOURCES_URL, data)
+      .post("/resources", data)
       .then((response) => {
         setResourceId(response.data.id);
       })
@@ -97,6 +99,7 @@ const Resource = () => {
         console.log(error);
       });
     e.target.reset();
+    setReload(null);
   };
 
   return (
@@ -109,6 +112,7 @@ const Resource = () => {
                 <h3>New Resource Information</h3>
                 <h1>{resourceId}</h1>
               </Col>
+
               <Col>
                 <FaPlusCircle
                   style={{ fontSize: "1.5rem" }}
@@ -118,6 +122,7 @@ const Resource = () => {
               </Col>
             </Row>
           </Container>
+
           <Form.Group className="mb-3" controlId="id">
             <Row>
               <Col sm>
@@ -183,7 +188,6 @@ const Resource = () => {
               <Col>
                 <Form.Select
                   type="select"
-                  // value={selected}
                   required
                   name="primary"
                   ref={refPf}
@@ -195,6 +199,7 @@ const Resource = () => {
                       </option>
                     );
                   })}
+                  {/* <option value>select </option> */}
                 </Form.Select>
               </Col>{" "}
             </Row>
@@ -206,12 +211,29 @@ const Resource = () => {
                 <Form.Label>Secondary Function</Form.Label>{" "}
               </Col>
               <Col>
-                <Form.Select type="select" name="secondary" ref={refSf}>
+                {newPf.map((i) => {
+                  return (
+                    <div key={i.id} value={i.id}>
+                      {i.description}
+                    </div>
+                  );
+                })}
+
+                <Form.Select
+                  type="select"
+                  required
+                  name="secondary"
+                  ref={refSf}
+                  onChange={handleChange}>
+                  <option>Please select the secondary function</option>
                   {newPf.map((i) => {
                     return (
-                      <option key={i.id} value={i.id}>
-                        {i.description}
-                      </option>
+                      <>
+                        {" "}
+                        <option key={i.id} value={i.id}>
+                          {i.description}
+                        </option>
+                      </>
                     );
                   })}
                 </Form.Select>
@@ -295,6 +317,7 @@ const Resource = () => {
                 <Form.Label>Cost </Form.Label>{" "}
                 <Form.Text className="text-muted">(USD)</Form.Text>{" "}
               </Col>
+
               <Col xs="auto" className="my-1 flex-fill">
                 <InputGroup className="mb-3">
                   <InputGroup.Text>
@@ -312,16 +335,17 @@ const Resource = () => {
                   />
                 </InputGroup>
               </Col>
+
               <Col xs="auto" className="my-1 flex-fill">
                 <InputGroup className="mb-3">
                   <InputGroup.Text>
                     Per<span style={{ color: "red" }}>* </span>{" "}
                   </InputGroup.Text>{" "}
                   <Form.Select type="select" required name="unit" ref={refUnit}>
-                    <option>Please Select Unit</option>
                     {units.map((unit) => {
-                      return <option key={unit.id}>{unit.unitType}</option>;
-                    })}
+                      return <option key={unit.id}>{unit.typeName}</option>;
+                    })}{" "}
+                    <option value="1">each </option>
                   </Form.Select>
                 </InputGroup>
               </Col>

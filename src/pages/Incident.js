@@ -21,13 +21,15 @@ const Incident = () => {
 
   const [items, setItems] = useState([]);
   const [incidentId, setIncidentId] = useState("");
-  const [category, setCategory] = useState("");
-  const [date, setDate] = useState("");
-  const [description, setDescription] = useState("");
-
+  const [input, setInput] = useState({
+    category: "",
+    incidentId: "",
+    date: "",
+    description: "",
+  });
   let navigate = useNavigate();
 
-  const fetchItems = async () => {
+  const fetchCategories = async () => {
     try {
       const response = await axios.get(CATEGORIES_URL);
       setItems(response.data);
@@ -36,17 +38,22 @@ const Incident = () => {
     }
   };
   useEffect(() => {
-    fetchItems();
+    fetchCategories();
   }, []);
 
   const onClick = () => {
-    navigate("/incident");
-    fetchItems();
+    setInput({ category: "", date: "", description: "" });
+    setIncidentId("");
+    fetchCategories();
     console.log("onClick");
   };
 
   const changePage = () => {
     navigate("/");
+  };
+
+  const onChange = (e) => {
+    setInput({ ...input, [e.target.name]: e.target.value });
   };
 
   const onSubmitHandler = (e) => {
@@ -64,21 +71,11 @@ const Incident = () => {
       .catch((error) => {
         console.log(error);
       });
-    e.target.reset();
+    setInput({ category: "", incidentId: "", date: "", description: "" });
   };
 
   return (
     <>
-      <Container>
-        {items.map((value, key) => {
-          return (
-            <div>
-              <div>{value.categoryType}</div>
-            </div>
-          );
-        })}
-      </Container>
-
       <Container>
         <Form onSubmit={onSubmitHandler}>
           <Container>
@@ -87,10 +84,6 @@ const Incident = () => {
                 <h3>New Incident Information</h3>
               </Col>
               <Col>
-                {/* <button type="submit" onSubmit={onSubmitHandler}>
-              cancel
-            </button> */}
-
                 <FaPlusCircle
                   style={{ fontSize: "1.5rem" }}
                   className="d-flex ms-auto me-5"
@@ -100,6 +93,7 @@ const Incident = () => {
               </Col>
             </Row>
           </Container>
+
           <Form.Group className="mb-3" controlId="incident">
             <Row>
               <Col>
@@ -108,11 +102,17 @@ const Incident = () => {
                 </Form.Label>{" "}
               </Col>
               <Col>
-                <Form.Select type="select" required ref={refCategory}>
-                  {/* <option value="">Please Select Category</option> */}
+                <Form.Select
+                  type="select"
+                  required
+                  ref={refCategory}
+                  name="category"
+                  value={input.category}
+                  onChange={onChange}>
                   {items.map((item) => {
-                    return <option value={item.id}>{item.CategoryType}</option>;
-                  })}
+                    return <option value={item.id}>{item.description}</option>;
+                  })}{" "}
+                  <option>select</option>
                 </Form.Select>
               </Col>{" "}
             </Row>
@@ -128,11 +128,12 @@ const Incident = () => {
               </Col>
               <Col>
                 <Form.Control
+                  name="incidentID"
+                  value={incidentId}
                   className="darkMode"
                   autoComplete="off"
                   plaintext
                   placeholder="*********"
-                  value={incidentId}
                   // style={{ backgroundColor: "#d4c9df" }}
                 />
               </Col>{" "}
@@ -149,16 +150,20 @@ const Incident = () => {
               </Col>
               <Col>
                 <Form.Control
+                  name="date"
+                  value={input.date}
                   autoComplete="off"
                   style={{ backgroundColor: "#d4c9df" }}
                   placeholder="mm/dd/yyyy"
                   type="date"
                   required
                   ref={refDate}
+                  onChange={onChange}
                 />
               </Col>{" "}
             </Row>
           </Form.Group>
+
           <Form.Group className="mb-3" controlId="formBasic4">
             <Row>
               <Col>
@@ -169,11 +174,14 @@ const Incident = () => {
               </Col>
               <Col>
                 <Form.Control
+                  name="description"
+                  value={input.description}
                   autoComplete="off"
                   style={{ backgroundColor: "#d4c9df" }}
                   as="textarea"
                   required
                   ref={refDescription}
+                  onChange={onChange}
                 />{" "}
               </Col>{" "}
             </Row>

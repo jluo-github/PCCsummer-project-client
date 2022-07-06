@@ -10,11 +10,12 @@ const MyNavbar = () => {
     localStorage.removeItem("userId");
     localStorage.removeItem("displayName");
     setExit(true);
+    setUserId(null);
   };
 
   useEffect(() => {
     setUserId(localStorage.getItem("userId"));
-
+    console.log(userId);
   }, [userId]);
 
   return (
@@ -25,7 +26,7 @@ const MyNavbar = () => {
       className="text-center shadow-lg py-4">
       <Container>
         <Navbar.Brand>
-          <Link to={"/"}>CIMT</Link>
+          <NavLink to="/">CIMT</NavLink>
         </Navbar.Brand>
 
         <Navbar.Toggle />
@@ -33,33 +34,27 @@ const MyNavbar = () => {
           <Nav className="">
             <Nav.Link>
               {" "}
-              <NavLink to="/resource">Add Available Resource</NavLink>
+              <NavLink to="resources">Add Available Resource</NavLink>
             </Nav.Link>
 
             <Nav.Link>
-              <NavLink to="/incident"> Add Emergency Incident</NavLink>
+              <NavLink to="incidents"> Add Emergency Incident</NavLink>
             </Nav.Link>
 
             <Nav.Link>
-              <NavLink to="/search-resources">Search Resources Form</NavLink>
+              <NavLink to="search-resources">Search Resources Form</NavLink>
             </Nav.Link>
-
-            {/* <Nav.Link>
-                <NavLink to="/search-resources-results">
-                  Search Resources Results
-                </NavLink>
-              </Nav.Link> */}
 
             <Nav.Link>
-              <NavLink to="/resource-report">Generate Resource Report</NavLink>
+              <NavLink to="resource-report">Generate Resource Report</NavLink>
             </Nav.Link>
 
-            {/* <Nav.Link>
+            <Nav.Link>
               <NavLink to="/login"> Login</NavLink>
-            </Nav.Link> */}
+            </Nav.Link>
 
             <Nav.Link onClick={onClickHandler}>
-              <NavLink to="/login">{userId ? "Exit" : "Login"}</NavLink>
+              <NavLink to="login">Exit</NavLink>
             </Nav.Link>
           </Nav>
         </Navbar.Collapse>
